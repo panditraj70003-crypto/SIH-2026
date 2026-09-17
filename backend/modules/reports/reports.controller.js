@@ -1,0 +1,65 @@
+
+const reportsService = require("./reports.service");
+
+const createReport = async (req, res) => {
+    try {
+        const {
+            latitude,
+            longitude,
+            description,
+            severity
+        } = req.body;
+
+        // Get user ID from JWT middleware
+        const userId = req.user.id;
+
+        const report = await reportsService.createReport(
+            userId,
+            latitude,
+            longitude,
+            description,
+            severity
+        );
+
+        res.status(201).json({
+            success: true,
+            message: "Report submitted successfully",
+            data: report
+        });
+
+    } catch (error) {
+        console.error("Report creation error:", error);
+
+        res.status(400).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
+
+
+const getMyReports = async (req, res) => {
+    try {
+        const userId = req.user.id;
+
+        const reports = await reportsService.getMyReports(userId);
+
+        res.status(200).json({
+            success: true,
+            data: reports
+        });
+
+    } catch (error) {
+        console.error("Fetching reports error:", error);
+
+        res.status(500).json({
+            success: false,
+            message: "Failed to fetch reports"
+        });
+    }
+};
+
+module.exports = {
+    createReport,
+    getMyReports
+};
