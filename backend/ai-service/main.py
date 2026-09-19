@@ -1,45 +1,57 @@
-from fastapi import FastAPI, UploadFile, File, Form
 
-app = FastAPI(
-    title="LandSafe AI Verification Service"
+import os
+import shutil
+from fastapi import FastAPI, UploadFile, File
+from inference_sdk import (
+    InferenceHTTPClient,
+    InferenceConfiguration
+)
+
+app = FastAPI()
+
+# Roboflow API key
+ROBOFLOW_API_KEY = "4qUi3gFsvhcGDX6eY4bW"
+
+# Roboflow client
+client = InferenceHTTPClient(
+    api_url="https://serverless.roboflow.com",
+    api_key=ROBOFLOW_API_KEY
+)
+
+configuration = InferenceConfiguration(
+    confidence_threshold=0.1,
+    api_key_transport="header"
 )
 
 
 @app.get("/")
 def home():
     return {
-        "success": True,
-        "message": "AI service is running"
+        "message": "LandSafe AI Service is running"
     }
 
 
-@app.post("/verify")
-async def verify_report(
-    image: UploadFile = File(...),
-    description: str = Form(...)
-):
+@app.post("/detect-landslide")
+async def detect_landslide(file: UploadFile = File(...)):
+
+    # Save uploaded image temporarily
+    image_path = "uploaded_image.jpg"
+
+    with open(image_path, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+
+    # Send image to Roboflow
+    with client.use_configuration(configuration):
+        result = client.infer(
+            image_path,
+            model_id="landslide-detection-yx051/1"
+        )
+
+    # Remove temporary image
+    os.remove(image_path)
+
     return {
         "success": True,
-        "message": "AI verification endpoint working",
-        "filename": image.filename,
-        "description": description,
-        "ai_status": "needs_more_evidence",
-        "ai_confidence": 0.0
-    }
-
-from pydantic import BaseModel
-
-
-class TextRequest(BaseModel):
-    description: str
-
-
-@app.post("/verify-text")
-async def verify_text(request: TextRequest):
-    return {
-        "success": True,
-        "message": "Node.js connected to AI service",
-        "description": request.description,
-        "ai_status": "needs_more_evidence",
-        "ai_confidence": 0.0
+        "filename": file.filename,
+        "predictions": result.get("predictions", [])
     }

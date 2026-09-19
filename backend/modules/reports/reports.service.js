@@ -1,12 +1,25 @@
-
 const reportsModel = require("./reports.model");
+ 
+
+const {
+    verifyReportWithAI
+} = require("../../services/ai.service");
+
+const {
+    calculateRiskLevel
+} = require("../../services/risk.service");
+
+const {
+    determineAlertStatus
+} = require("../../services/alert.service");
 
 const createReport = async (
     userId,
     latitude,
     longitude,
     description,
-    severity
+    severity,
+    imagePath
 ) => {
     // Validate coordinates
     if (
@@ -40,17 +53,45 @@ const createReport = async (
         );
     }
 
-    const report = await reportsModel.createReport(
-        userId,
-        latitude,
-        longitude,
-        description.trim(),
-        severity
+    if (!imagePath) {
+        throw new Error("Image is required");
+    }
+
+    // Step 1: Send image to AI service
+    const aiResult = await verifyReportWithAI(
+        imagePath,
+        description.trim()
     );
+
+    const riskLevel = calculateRiskLevel(
+    severity,
+    aiResult.ai_confidence
+);
+const alertStatus = determineAlertStatus(riskLevel);
+
+
+
+console.log("Risk Level:", riskLevel);
+console.log("Alert Status:", alertStatus);
+
+
+    // Step 2: Save report with AI result
+   const report = await reportsModel.createReport(
+    userId,
+    latitude,
+    longitude,
+    description.trim(),
+    severity,
+    imagePath,
+    aiResult.ai_status || "needs_more_evidence",
+    aiResult.ai_confidence ?? null,
+    aiResult.ai_observations || null,
+    riskLevel,
+    alertStatus
+);
 
     return report;
 };
-
 
 const getMyReports = async (userId) => {
     const reports = await reportsModel.getReportsByUserId(userId);

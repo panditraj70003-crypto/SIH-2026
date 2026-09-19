@@ -1,6 +1,7 @@
 
 const reportsService = require("./reports.service");
 
+
 const createReport = async (req, res) => {
     try {
         const {
@@ -10,22 +11,31 @@ const createReport = async (req, res) => {
             severity
         } = req.body;
 
-        // Get user ID from JWT middleware
         const userId = req.user.id;
+
+        if (!req.file) {
+            return res.status(400).json({
+                success: false,
+                message: "Image is required"
+            });
+        }
+
+       
 
         const report = await reportsService.createReport(
             userId,
-            latitude,
-            longitude,
+            Number(latitude),
+            Number(longitude),
             description,
-            severity
+            severity,
+            req.file.path
         );
 
-        res.status(201).json({
-            success: true,
-            message: "Report submitted successfully",
-            data: report
-        });
+ res.status(201).json({
+    success: true,
+    message: "Report submitted successfully",
+    data: report
+});
 
     } catch (error) {
         console.error("Report creation error:", error);
@@ -36,7 +46,6 @@ const createReport = async (req, res) => {
         });
     }
 };
-
 
 const getMyReports = async (req, res) => {
     try {

@@ -1,0 +1,21 @@
+# Node.js
+node_modules/
+
+# Python virtual environments
+
+venv/
+roboflow-env/
+.venv/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Environment variables
+.env
+
+# Uploaded/generated files
+uploaded_image.jpg
+
+# VS Code
+.vscode/

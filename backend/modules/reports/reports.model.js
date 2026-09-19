@@ -1,4 +1,3 @@
-
 const pool = require("../../config/db");
 
 const createReport = async (
@@ -6,7 +5,13 @@ const createReport = async (
     latitude,
     longitude,
     description,
-    severity
+    severity,
+    imageUrl,
+    aiStatus,
+    aiConfidence,
+    aiObservations,
+    riskLevel,
+    alertStatus
 ) => {
     const query = `
         INSERT INTO reports (
@@ -14,9 +19,18 @@ const createReport = async (
             latitude,
             longitude,
             description,
-            severity
+            severity,
+            image_url,
+            ai_status,
+            ai_confidence,
+            ai_observations,
+            risk_level,
+            alert_status
         )
-        VALUES ($1, $2, $3, $4, $5)
+        VALUES (
+            $1, $2, $3, $4, $5, $6,
+            $7, $8, $9, $10, $11
+        )
         RETURNING *;
     `;
 
@@ -25,15 +39,19 @@ const createReport = async (
         latitude,
         longitude,
         description,
-        severity
+        severity,
+        imageUrl,
+        aiStatus,
+        aiConfidence,
+        aiObservations,
+        riskLevel,
+        alertStatus
     ];
 
     const result = await pool.query(query, values);
 
     return result.rows[0];
 };
-
-
 
 const getReportsByUserId = async (userId) => {
     const query = `
@@ -44,6 +62,8 @@ const getReportsByUserId = async (userId) => {
             description,
             severity,
             status,
+            risk_level,
+            alert_status,
             created_at
         FROM reports
         WHERE user_id = $1
@@ -59,4 +79,3 @@ module.exports = {
     createReport,
     getReportsByUserId
 };
-
