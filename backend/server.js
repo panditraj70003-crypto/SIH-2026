@@ -2,6 +2,11 @@ require("dotenv").config();
 
 const app = require("./app");
 const pool = require("./config/db");
+const seedRainfall = require("./modules/rainfall/rainfall.seed");
+const seedHistoricalLandslides =
+    require(
+        "./modules/historicalLandslides/historicalLandslides.seed"
+    );
 
 const PORT = process.env.PORT || 5000;
 
@@ -10,6 +15,9 @@ const startServer = async () => {
         await pool.query("SELECT NOW()");
 
         console.log("Database connection successful");
+
+        await seedRainfall();
+        await seedHistoricalLandslides();
 
         app.listen(PORT, () => {
             console.log(`LandSafe server running on port ${PORT}`);

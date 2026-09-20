@@ -5,6 +5,13 @@ const authenticate = require("./middlewares/auth.middleware");
 const authRoutes = require("./modules/auth/auth.routes");
 const reportsRoutes = require("./modules/reports/reports.routes");
 
+const rainfallRoutes = require("./modules/rainfall/rainfall.routes");
+const terrainRoutes = require("./modules/terrain/terrain.routes");
+const historicalLandslideRoutes =
+    require(
+        "./modules/historicalLandslides/historicalLandslides.routes"
+    );
+
 const app = express();
 
 app.use(cors());
@@ -105,5 +112,12 @@ app.post(
 app.use("/api/reports", reportsRoutes);
 
 app.use("/api/auth", authRoutes);
+app.use("/api/rainfall", rainfallRoutes);
+app.use("/api/terrain",terrainRoutes);
+app.use(
+    "/api/historical-landslides",
+    historicalLandslideRoutes
+);
+
 
 module.exports = app;
