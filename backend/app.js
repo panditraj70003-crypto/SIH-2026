@@ -10,6 +10,7 @@ const terrainRoutes = require("./modules/terrain/terrain.routes");
 const historicalLandslideRoutes = require("./modules/historicalLandslides/historicalLandslides.routes");
 const soilMoistureRoutes = require("./modules/soilMoisture/soilMoisture.routes");
 const satelliteRoutes = require("./modules/satellite/satellite.routes");
+const gisRoutes = require("./modules/gis/gis.routes");
 
 
 const app = express();
@@ -119,5 +120,6 @@ app.use("/api/terrain", terrainRoutes);
 app.use("/api/historical-landslides", historicalLandslideRoutes);
 app.use("/api/soil-moisture", soilMoistureRoutes);
 app.use("/api/satellite", satelliteRoutes);
+app.use("/api/gis", gisRoutes);
 
 module.exports = app;
