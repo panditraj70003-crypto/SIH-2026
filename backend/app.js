@@ -7,9 +7,10 @@ const reportsRoutes = require("./modules/reports/reports.routes");
 
 const rainfallRoutes = require("./modules/rainfall/rainfall.routes");
 const terrainRoutes = require("./modules/terrain/terrain.routes");
-const historicalLandslideRoutes =require("./modules/historicalLandslides/historicalLandslides.routes");
-const soilMoistureRoutes =require("./modules/soilMoisture/soilMoisture.routes");
+const historicalLandslideRoutes = require("./modules/historicalLandslides/historicalLandslides.routes");
+const soilMoistureRoutes = require("./modules/soilMoisture/soilMoisture.routes");
 const satelliteRoutes = require("./modules/satellite/satellite.routes");
+const predictionRoutes = require("./modules/prediction/prediction.routes");
 
 const app = express();
 
@@ -110,11 +111,13 @@ app.post(
 
 app.use("/api/reports", reportsRoutes);
 
+app.use("/api/prediction", predictionRoutes);
+
 app.use("/api/auth", authRoutes);
 app.use("/api/rainfall", rainfallRoutes);
-app.use("/api/terrain",terrainRoutes);
-app.use("/api/historical-landslides",historicalLandslideRoutes);
-app.use("/api/soil-moisture",soilMoistureRoutes);
-app.use("/api/satellite",satelliteRoutes);
+app.use("/api/terrain", terrainRoutes);
+app.use("/api/historical-landslides", historicalLandslideRoutes);
+app.use("/api/soil-moisture", soilMoistureRoutes);
+app.use("/api/satellite", satelliteRoutes);
 
 module.exports = app;
