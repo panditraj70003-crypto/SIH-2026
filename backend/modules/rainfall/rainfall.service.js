@@ -1,21 +1,28 @@
 const {
     createRainfallReading,
-    getLatestRainfallReading,
     getRainfallHistory,
-    getRainfallAccumulation,
+    getLatestRainfall,
+    getRainfallAccumulation
 } = require("./rainfall.model");
 
+const {
+    fetchRainfall
+} = require("./rainfall.client");
 
-const saveRainfallReading = async ({
-    latitude,
-    longitude,
-    rainfallMm,
-    observationTime,
-    district,
-    state,
-    source = "DEMO",
-    rawData = null
-}) => {
+
+// Existing manual insert
+const addRainfallReading = async (data) => {
+
+    const {
+        latitude,
+        longitude,
+        rainfallMm,
+        observationTime,
+        source,
+        district,
+        state,
+        rawData
+    } = data;
 
     if (
         latitude === undefined ||
@@ -23,67 +30,147 @@ const saveRainfallReading = async ({
         rainfallMm === undefined ||
         !observationTime
     ) {
-        throw new Error("Required rainfall data is missing");
+        throw new Error(
+            "Latitude, longitude, rainfallMm and observationTime are required"
+        );
     }
 
-    const reading = await createRainfallReading({
+    if (rainfallMm < 0) {
+        throw new Error(
+            "Rainfall cannot be negative"
+        );
+    }
+
+    return await createRainfallReading({
         latitude,
         longitude,
         rainfallMm,
         observationTime,
-        district,
-        state,
-        source,
-        rawData
+        source: source || "DEMO",
+        district: district || null,
+        state: state || null,
+        rawData: rawData || null
     });
-
-    return reading;
 };
 
 
-const fetchLatestRainfall = async (latitude, longitude) => {
-
-    const reading = await getLatestRainfallReading(
-        latitude,
-        longitude
-    );
-
-    return reading;
-};
-
-
-const fetchRainfallHistory = async (
+// Fetch real rainfall from Open-Meteo
+// and store it in PostgreSQL
+const fetchAndStoreRainfall = async ({
     latitude,
     longitude,
-    limit = 24
-) => {
+    district = null,
+    state = null,
+    pastHours = 24
+}) => {
 
-    const readings = await getRainfallHistory(
+    const result = await fetchRainfall({
         latitude,
         longitude,
-        limit
-    );
+        pastHours
+    });
 
-    return readings;
+    const observations = [];
+
+    for (const rainfall of result.rainfall) {
+
+        const observation =
+            await createRainfallReading({
+
+                // Keep the original LandSafe coordinates
+                latitude,
+                longitude,
+
+                rainfallMm:
+                    rainfall.rainfallMm,
+
+                observationTime:
+                    new Date(
+                        rainfall.observationTime
+                    ),
+
+                source:
+                    "OPEN_METEO",
+
+                district,
+                state,
+
+                rawData: {
+                    provider:
+                        "OPEN_METEO",
+
+                    gridLatitude:
+                        result.latitude,
+
+                    gridLongitude:
+                        result.longitude,
+
+                    elevation:
+                        result.elevation,
+
+                    observationTime:
+                        rainfall.observationTime,
+
+                    precipitation:
+                        rainfall.rainfallMm
+                }
+            });
+
+        observations.push(observation);
+    }
+
+    return {
+        latitude,
+        longitude,
+        source: "OPEN_METEO",
+        count: observations.length,
+        observations
+    };
 };
 
-const fetchRainfallAccumulation = async (
+
+const getRainfall = async (
     latitude,
     longitude
 ) => {
 
-    const rainfall = await getRainfallAccumulation(
+    return await getLatestRainfall(
         latitude,
         longitude
     );
+};
 
-    return rainfall;
+
+const getRainfallHistoryData = async (
+    latitude,
+    longitude,
+    limit = 10
+) => {
+
+    return await getRainfallHistory(
+        latitude,
+        longitude,
+        limit
+    );
+};
+
+
+const getRainfallAccumulationData = async (
+    latitude,
+    longitude
+) => {
+
+    return await getRainfallAccumulation(
+        latitude,
+        longitude
+    );
 };
 
 
 module.exports = {
-    saveRainfallReading,
-    fetchLatestRainfall,
-    fetchRainfallHistory,
-    fetchRainfallAccumulation,
+    addRainfallReading,
+    fetchAndStoreRainfall,
+    getRainfall,
+    getRainfallHistoryData,
+    getRainfallAccumulationData
 };

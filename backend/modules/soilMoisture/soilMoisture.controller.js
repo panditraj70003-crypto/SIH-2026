@@ -1,115 +1,146 @@
 const {
-    saveSoilMoistureReading,
-    fetchLatestSoilMoisture,
-    fetchSoilMoistureHistory
+    fetchAndStoreSoilMoisture
 } = require("./soilMoisture.service");
 
+const {
+    getLatestSoilMoisture,
+    getSoilMoistureHistory
+} = require("./soilMoisture.model");
 
-const createSoilMoisture = async (
+
+const fetchSoilMoistureData = async (
     req,
     res
 ) => {
+    try {
 
-    const {
-        latitude,
-        longitude,
-        soilMoisture,
-        observationTime,
-        depthCm,
-        source,
-        rawData
-    } = req.body;
-
-
-    const reading =
-        await saveSoilMoistureReading({
+        const {
             latitude,
-            longitude,
-            soilMoisture,
-            observationTime,
-            depthCm,
-            source,
-            rawData
+            longitude
+        } = req.params;
+
+        const {
+            pastHours = 24
+        } = req.query;
+
+        const result =
+            await fetchAndStoreSoilMoisture({
+                latitude: Number(latitude),
+                longitude: Number(longitude),
+                pastHours: Number(pastHours)
+            });
+
+        res.status(200).json({
+            success: true,
+            message:
+                "Soil moisture data fetched and stored successfully",
+            data: result
         });
 
+    } catch (error) {
 
-    res.status(201).json({
-        success: true,
-        message:
-            "Soil moisture reading created successfully",
-        data: reading
-    });
-};
-
-
-const getLatest = async (
-    req,
-    res
-) => {
-
-    const {
-        latitude,
-        longitude
-    } = req.params;
-
-
-    const reading =
-        await fetchLatestSoilMoisture(
-            Number(latitude),
-            Number(longitude)
+        console.error(
+            "Fetch soil moisture error:",
+            error
         );
 
-
-    if (!reading) {
-
-        return res.status(404).json({
+        res.status(500).json({
             success: false,
-            message:
-                "No soil moisture data found"
+            message: error.message
         });
     }
-
-
-    res.status(200).json({
-        success: true,
-        data: reading
-    });
 };
 
 
-const getHistory = async (
+const getLatestSoilMoistureData = async (
     req,
     res
 ) => {
+    try {
 
-    const {
-        latitude,
-        longitude
-    } = req.params;
+        const {
+            latitude,
+            longitude
+        } = req.params;
 
+        const result =
+            await getLatestSoilMoisture(
+                Number(latitude),
+                Number(longitude)
+            );
 
-    const limit =
-        Number(req.query.limit) || 24;
+        if (!result) {
+            return res.status(404).json({
+                success: false,
+                message:
+                    "No soil moisture data found for this location"
+            });
+        }
 
+        res.status(200).json({
+            success: true,
+            data: result
+        });
 
-    const readings =
-        await fetchSoilMoistureHistory(
-            Number(latitude),
-            Number(longitude),
-            limit
+    } catch (error) {
+
+        console.error(
+            "Get latest soil moisture error:",
+            error
         );
 
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
 
-    res.status(200).json({
-        success: true,
-        count: readings.length,
-        data: readings
-    });
+
+const getSoilMoistureHistoryData = async (
+    req,
+    res
+) => {
+    try {
+
+        const {
+            latitude,
+            longitude
+        } = req.params;
+
+        const limit =
+            Number(req.query.limit) || 100;
+
+        const result =
+            await getSoilMoistureHistory(
+                Number(latitude),
+                Number(longitude),
+                limit
+            );
+
+        res.status(200).json({
+            success: true,
+            count: result.length,
+            data: result
+        });
+
+    } catch (error) {
+
+        console.error(
+            "Get soil moisture history error:",
+            error
+        );
+
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
 };
 
 
 module.exports = {
-    createSoilMoisture,
-    getLatest,
-    getHistory
+    fetchSoilMoistureData,
+    getLatestSoilMoistureData,
+    getSoilMoistureHistoryData
 };

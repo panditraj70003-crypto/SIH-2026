@@ -14,9 +14,9 @@ const startServer = async () => {
 
         console.log("Database connection successful");
 
-        await seedRainfall();
+        //await seedRainfall();
         await seedHistoricalLandslides();
-        await seedSatellite();
+        //await seedSatellite();
 
         app.listen(PORT, () => {
             console.log(`LandSafe server running on port ${PORT}`);
