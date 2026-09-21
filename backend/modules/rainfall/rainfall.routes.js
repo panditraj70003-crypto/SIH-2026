@@ -4,27 +4,42 @@ const {
     createRainfall,
     getLatestRainfall,
     getRainfallHistory,
-    getRainfallAccumulationData
+    getRainfallAccumulation,
+    fetchRainfallData
 } = require("./rainfall.controller");
 
 const router = express.Router();
 
 
-router.post("/", createRainfall);
+// Fetch real rainfall from Open-Meteo
+router.post(
+    "/fetch/:latitude/:longitude",
+    fetchRainfallData
+);
 
 
+// Manually create rainfall reading
+router.post(
+    "/",
+    createRainfall
+);
+
+
+// Rainfall history
 router.get(
     "/:latitude/:longitude/history",
     getRainfallHistory
 );
 
 
+// Rainfall accumulation
 router.get(
     "/:latitude/:longitude/accumulation",
-    getRainfallAccumulationData
+    getRainfallAccumulation
 );
 
 
+// Latest rainfall
 router.get(
     "/:latitude/:longitude",
     getLatestRainfall

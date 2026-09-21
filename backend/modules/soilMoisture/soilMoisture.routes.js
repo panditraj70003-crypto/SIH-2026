@@ -1,30 +1,32 @@
 const express = require("express");
 
 const {
-    createSoilMoisture,
-    getLatest,
-    getHistory
+    fetchSoilMoistureData,
+    getLatestSoilMoistureData,
+    getSoilMoistureHistoryData
 } = require("./soilMoisture.controller");
-
 
 const router = express.Router();
 
 
+// Fetch from Open-Meteo and store in database
 router.post(
-    "/",
-    createSoilMoisture
+    "/fetch/:latitude/:longitude",
+    fetchSoilMoistureData
 );
 
 
+// Get stored history
 router.get(
     "/:latitude/:longitude/history",
-    getHistory
+    getSoilMoistureHistoryData
 );
 
 
+// Get latest stored reading
 router.get(
     "/:latitude/:longitude",
-    getLatest
+    getLatestSoilMoistureData
 );
 
 
