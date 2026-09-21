@@ -5,8 +5,7 @@ const pool = require("./config/db");
 const seedRainfall = require("./modules/rainfall/rainfall.seed");
 const seedHistoricalLandslides =require("./modules/historicalLandslides/historicalLandslides.seed");
 const seedSatellite = require("./modules/satellite/satellite.seed");
-const predictionRoutes =
-    require("./modules/prediction/prediction.routes");
+
 
 const PORT = process.env.PORT || 5000;
 
