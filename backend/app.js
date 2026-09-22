@@ -10,16 +10,12 @@ const terrainRoutes = require("./modules/terrain/terrain.routes");
 const historicalLandslideRoutes = require("./modules/historicalLandslides/historicalLandslides.routes");
 const soilMoistureRoutes = require("./modules/soilMoisture/soilMoisture.routes");
 const satelliteRoutes = require("./modules/satellite/satellite.routes");
-<<<<<<< HEAD
 const monitoringRoutes =
     require("./modules/monitoring/monitoring.routes");
 
     const featureBuilderRoutes =
     require("./modules/featureBuilder/featureBuilder.routes");
-=======
 const gisRoutes = require("./modules/gis/gis.routes");
-
->>>>>>> 2f91cd2676ccd676e7aec7e6eb4a569a6d324e2d
 
 const app = express();
 
