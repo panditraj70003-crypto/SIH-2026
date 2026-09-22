@@ -86,7 +86,7 @@ const fetchAndStoreRainfall = async ({
 
                 observationTime:
                     new Date(
-                        rainfall.observationTime
+                        `${rainfall.observationTime}:00Z`
                     ),
 
                 source:
