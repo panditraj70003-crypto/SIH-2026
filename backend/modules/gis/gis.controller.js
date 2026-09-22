@@ -55,7 +55,37 @@ const getRiskSummary = async (req, res) => {
     }
 };
 
+
+const getRiskLocationById = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const location = await gisService.getRiskLocationById(id);
+
+        if (!location) {
+            return res.status(404).json({
+                success: false,
+                message: "Risk location not found"
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            data: location
+        });
+
+    } catch (error) {
+        console.error("Risk location details error:", error.message);
+
+        res.status(500).json({
+            success: false,
+            message: "Failed to fetch risk location"
+        });
+    }
+};
+
 module.exports = {
     getRiskLocations,
-    getRiskSummary
+    getRiskSummary,
+    getRiskLocationById
 };

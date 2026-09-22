@@ -60,7 +60,30 @@ const getRiskSummary = async () => {
     return result.rows[0];
 };
 
+const getRiskLocationById = async (id) => {
+    const query = `
+        SELECT
+            id,
+            latitude,
+            longitude,
+            severity,
+            risk_level,
+            ai_status,
+            ai_confidence,
+            description,
+            alert_status,
+            created_at
+        FROM reports
+        WHERE id = $1;
+    `;
+
+    const result = await pool.query(query, [id]);
+
+    return result.rows[0];
+};
+
 module.exports = {
     getRiskLocations,
-    getRiskSummary
+    getRiskSummary,
+    getRiskLocationById,
 };

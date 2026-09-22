@@ -11,5 +11,6 @@ router.get(
 );
 
 router.get("/risk-summary", gisController.getRiskSummary);
+router.get("/risk-locations/:id", gisController.getRiskLocationById);
 
 module.exports = router;

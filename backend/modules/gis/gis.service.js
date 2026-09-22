@@ -12,7 +12,14 @@ const getRiskSummary = async () => {
     return summary;
 };
 
+const getRiskLocationById = async (id) => {
+    const location = await gisModel.getRiskLocationById(id);
+
+    return location;
+};
+
 module.exports = {
     getRiskLocations,
-    getRiskSummary
+    getRiskSummary,
+    getRiskLocationById
 };
