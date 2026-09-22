@@ -8,6 +8,7 @@ const seedSatellite = require("./modules/satellite/satellite.seed");
 const seedSoilMoisture =
     require("./modules/soilMoisture/soilMoisture.seed");
 
+
 const PORT = process.env.PORT || 5000;
 
 const startServer = async () => {

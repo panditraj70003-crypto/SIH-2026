@@ -75,7 +75,22 @@ const getReportsByUserId = async (userId) => {
     return result.rows;
 };
 
+
+const updateReportAlertStatus = async (reportId, status) => {
+    const query = `
+        UPDATE reports
+        SET alert_status = $1
+        WHERE id = $2
+        RETURNING *;
+    `;
+
+    const result = await pool.query(query, [status, reportId]);
+
+    return result.rows[0];
+};
+
 module.exports = {
     createReport,
-    getReportsByUserId
+    getReportsByUserId,
+    updateReportAlertStatus
 };

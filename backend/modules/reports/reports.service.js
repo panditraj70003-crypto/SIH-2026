@@ -1,4 +1,6 @@
 const reportsModel = require("./reports.model");
+
+const { createRiskAlert } = require("./alerts.service");
  
 
 const {
@@ -90,7 +92,12 @@ console.log("Alert Status:", alertStatus);
     alertStatus
 );
 
-    return report;
+const alert = await createRiskAlert(report);
+
+   return {
+    report,
+    alert
+};
 };
 
 const getMyReports = async (userId) => {
