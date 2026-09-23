@@ -1,0 +1,12 @@
+{
+  "name": "NER-SAFE",
+  "short_name": "NER-SAFE",
+  "description": "Landslide, flood and rain risk alerts for the North Eastern Region",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F6F1E7",
+  "theme_color": "#F6F1E7",
+  "icons": [
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

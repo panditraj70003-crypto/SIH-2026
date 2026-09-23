@@ -1,0 +1,298 @@
+/* Scoped copy of the styling from the team's ner-safe-map-2.html reference.
+   Everything is nested under .nsmap so it only ever affects this component -
+   Leaflet's own classes (leaflet-container, leaflet-popup, ...) are global,
+   so we scope our overrides of them rather than touching Leaflet's CSS. */
+
+.nsmap {
+  --map-bg: #04070d;
+  --map-panel: rgba(11, 18, 32, 0.82);
+  --map-ink: #e7edf5;
+  --map-muted: #8b9bb0;
+  --map-red: #ef4444;
+  --map-orange: #f59e0b;
+  --map-green: #10b981;
+  --map-grey: #4b5568;
+  --map-border: #1c2740;
+  position: relative;
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid rgb(var(--line));
+  background: var(--map-bg);
+  color: var(--map-ink);
+}
+
+/* ---------- alert ticker ---------- */
+.nsmap .nsmap-alertbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(90deg, #450a0a, #7f1d1d 45%, #450a0a);
+  border-bottom: 1px solid #7f1d1d;
+  padding: 6px 0;
+  overflow: hidden;
+  position: relative;
+  transition: opacity 0.3s ease;
+}
+.nsmap .nsmap-alertbar .tag {
+  flex: 0 0 auto;
+  background: var(--map-red);
+  color: #fff;
+  font-weight: 800;
+  font-size: 11px;
+  letter-spacing: 1px;
+  padding: 3px 10px;
+  margin-left: 10px;
+  border-radius: 4px;
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.8);
+  white-space: nowrap;
+}
+.nsmap .nsmap-alerttrack {
+  flex: 1 1 auto;
+  overflow: hidden;
+  white-space: nowrap;
+  position: relative;
+  height: 18px;
+}
+.nsmap .nsmap-alerttrack span {
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #fecaca;
+  animation: nsmap-marquee 16s linear infinite;
+  white-space: nowrap;
+}
+@keyframes nsmap-marquee {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .nsmap .nsmap-alerttrack span {
+    animation: none;
+    left: 8px;
+  }
+}
+
+/* ---------- map area ---------- */
+.nsmap .nsmap-mapwrap {
+  position: relative;
+}
+.nsmap .nsmap-mapel {
+  width: 100%;
+  background: var(--map-bg);
+}
+.nsmap .leaflet-container {
+  background: var(--map-bg);
+  font-family: inherit;
+}
+.nsmap .leaflet-popup-content-wrapper,
+.nsmap .leaflet-popup-tip {
+  background: #0b1220;
+  color: var(--map-ink);
+  border: 1px solid var(--map-border);
+}
+.nsmap .leaflet-control-attribution {
+  background: rgba(4, 7, 13, 0.65) !important;
+  color: #64748b !important;
+  font-size: 9.5px !important;
+}
+.nsmap .leaflet-control-attribution a {
+  color: #8b9bb0 !important;
+}
+.nsmap .leaflet-control-zoom a {
+  background: #0b1220 !important;
+  color: #e7edf5 !important;
+  border-color: var(--map-border) !important;
+}
+
+.nsmap .nersafe-tip {
+  background: rgba(6, 11, 20, 0.95) !important;
+  border: 1px solid var(--map-border) !important;
+  color: var(--map-ink) !important;
+  border-radius: 8px !important;
+  padding: 7px 10px !important;
+  font-size: 12px !important;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.5) !important;
+}
+.nsmap .nersafe-tip .d-name {
+  font-weight: 800;
+  font-size: 13px;
+}
+.nsmap .nersafe-tip .d-state {
+  color: var(--map-muted);
+}
+.nsmap .nersafe-tip .d-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  margin-top: 3px;
+}
+.nsmap .nersafe-tip .d-lvl {
+  font-weight: 700;
+}
+.nsmap .leaflet-tooltip-top.nersafe-tip::before {
+  border-top-color: var(--map-border) !important;
+}
+
+/* glow on high/moderate risk district fills */
+.nsmap path.nsmap-risk-high {
+  filter: drop-shadow(0 0 5px rgba(239, 68, 68, 0.95)) drop-shadow(0 0 10px rgba(239, 68, 68, 0.55));
+}
+.nsmap path.nsmap-risk-moderate {
+  filter: drop-shadow(0 0 3px rgba(245, 158, 11, 0.55));
+}
+.nsmap path.nsmap-risk-selected {
+  filter: drop-shadow(0 0 0 rgba(255, 255, 255, 0)) drop-shadow(0 0 6px rgba(255, 255, 255, 0.85));
+}
+
+/* pulsing high-risk marker */
+.nsmap .rb-pulse {
+  position: relative;
+  width: 16px;
+  height: 16px;
+}
+.nsmap .rb-pulse .core {
+  position: absolute;
+  left: 4px;
+  top: 4px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--map-red);
+  border: 1.5px solid #fecaca;
+  box-shadow: 0 0 6px var(--map-red);
+}
+.nsmap .rb-pulse .ring {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--map-red);
+  opacity: 0.55;
+  animation: nsmap-rbpulse 1.6s ease-out infinite;
+}
+@keyframes nsmap-rbpulse {
+  0% {
+    transform: scale(0.3);
+    opacity: 0.65;
+  }
+  100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .nsmap .rb-pulse .ring {
+    animation: none;
+    display: none;
+  }
+}
+
+/* ---------- legend ---------- */
+.nsmap .nsmap-legend {
+  position: absolute;
+  left: 8px;
+  bottom: 8px;
+  z-index: 800;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  background: var(--map-panel);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--map-border);
+  border-radius: 10px;
+  padding: 6px 9px;
+  font-size: 10.5px;
+  color: var(--map-muted);
+}
+.nsmap .nsmap-legend b {
+  color: var(--map-ink);
+}
+.nsmap .nsmap-legend .sw {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+.nsmap .nsmap-legend i {
+  width: 9px;
+  height: 9px;
+  border-radius: 2px;
+  display: inline-block;
+}
+
+/* ---------- HUD strip ---------- */
+.nsmap .nsmap-hud {
+  background: #050a14;
+  border-top: 1px solid var(--map-border);
+  padding: 10px 12px;
+}
+.nsmap .nsmap-hudgrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.nsmap .nsmap-hudcard {
+  border-radius: 10px;
+  padding: 8px 6px;
+  text-align: center;
+  border: 1px solid;
+}
+.nsmap .nsmap-hudcard .n {
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1;
+}
+.nsmap .nsmap-hudcard .l {
+  font-size: 9.5px;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  margin-top: 3px;
+  opacity: 0.9;
+}
+.nsmap .nsmap-hud-red {
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.45);
+  color: #fca5a5;
+}
+.nsmap .nsmap-hud-orange {
+  background: rgba(245, 158, 11, 0.12);
+  border-color: rgba(245, 158, 11, 0.45);
+  color: #fcd34d;
+}
+.nsmap .nsmap-hud-yellow {
+  background: rgba(16, 185, 129, 0.12);
+  border-color: rgba(16, 185, 129, 0.45);
+  color: #6ee7b7;
+}
+.nsmap .nsmap-hudfoot {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 8px;
+  font-size: 9.5px;
+  color: var(--map-muted);
+}
+
+@media (max-width: 480px) {
+  .nsmap .nsmap-hudcard .n {
+    font-size: 18px;
+  }
+  .nsmap .nsmap-legend {
+    font-size: 9.5px;
+    padding: 5px 7px;
+    gap: 6px;
+  }
+  .nsmap .nsmap-alertbar .tag {
+    font-size: 10px;
+    padding: 2px 7px;
+    margin-left: 7px;
+  }
+}

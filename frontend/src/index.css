@@ -1,0 +1,81 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Colors are stored as "R G B" triplets (not hex) so Tailwind's opacity
+   modifiers work, e.g. bg-teal/10, border-accent/30 - see tailwind.config.js */
+:root {
+  --bg: 246 241 231;
+  --surface: 255 255 255;
+  --surface-2: 239 231 216;
+  --ink: 36 31 26;
+  --muted: 122 111 97;
+  --line: 228 217 197;
+  --accent: 184 83 31;
+  --accent-ink: 255 255 255;
+  --teal: 47 111 98;
+  --low: 63 143 95;
+  --moderate: 190 148 40;
+  --high: 217 113 31;
+  --critical: 194 59 46;
+}
+
+.dark {
+  --bg: 23 19 16;
+  --surface: 34 28 23;
+  --surface-2: 44 36 25;
+  --ink: 243 236 225;
+  --muted: 168 155 138;
+  --line: 55 46 36;
+  --accent: 226 136 74;
+  --accent-ink: 34 28 23;
+  --teal: 111 179 160;
+  --low: 92 179 126;
+  --moderate: 227 185 74;
+  --high: 234 139 71;
+  --critical: 229 103 90;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  background: rgb(var(--bg));
+  color: rgb(var(--ink));
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+* {
+  scrollbar-width: thin;
+}
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgb(var(--line));
+  border-radius: 999px;
+}
+
+:focus-visible {
+  outline: 2px solid rgb(var(--accent));
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* small helper so we don't repeat this card recipe everywhere */
+.paper {
+  background: rgb(var(--surface));
+  border: 1px solid rgb(var(--line));
+  border-radius: 18px;
+}
