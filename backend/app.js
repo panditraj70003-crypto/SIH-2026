@@ -19,7 +19,9 @@ const gisRoutes = require("./modules/gis/gis.routes");
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+    origin: "https://sih-2026-mu-swart.vercel.app"
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
