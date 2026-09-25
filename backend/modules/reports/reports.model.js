@@ -50,7 +50,9 @@ const createReport = async (
 
     const result = await pool.query(query, values);
 
-    return result.rows[0];
+console.log("✅ REPORT INSERTED INTO DATABASE:", result.rows[0]);
+
+return result.rows[0];
 };
 
 const getReportsByUserId = async (userId) => {

@@ -11,7 +11,10 @@ const createReport = async (req, res) => {
             severity
         } = req.body;
 
-        const userId = req.user.id;
+        // Report submission is public.
+        // If a user is logged in, keep their ID.
+        // Otherwise, save the report as a guest report.
+        const userId = req.user?.id || null;
 
         if (!req.file) {
             return res.status(400).json({
@@ -19,8 +22,6 @@ const createReport = async (req, res) => {
                 message: "Image is required"
             });
         }
-
-       
 
         const report = await reportsService.createReport(
             userId,
@@ -31,11 +32,11 @@ const createReport = async (req, res) => {
             req.file.path
         );
 
- res.status(201).json({
-    success: true,
-    message: "Report submitted successfully",
-    data: report
-});
+        res.status(201).json({
+            success: true,
+            message: "Report submitted successfully",
+            data: report
+        });
 
     } catch (error) {
         console.error("Report creation error:", error);

@@ -15,14 +15,14 @@ const upload = multer({
 
 router.post(
     "/",
-    authenticate,
+   
     upload.single("image"),
     reportsController.createReport
 );
 
 router.get(
     "/my-reports",
-    authenticate,
+
     reportsController.getMyReports
 );
 
